@@ -2,17 +2,26 @@ import React, {useState} from "react";
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css'
-
+import { useNavigate } from "react-router-dom"; // 👈 Import here
 
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
 
+    const navigate = useNavigate(); // 👈 Create the navigation object
+    const handleLogin = (e) => {
+      e.preventDefault();
+  
+      
+      navigate("/dashboard"); // 👈 Navigate to dashboard on success
+    };
+  
+
     return(
 <div className="login-container">
   <div className="login-card">
     <h3 className="mb-4 text-center">Welcome Back 👋</h3>
-    <form>
+    <form onSubmit={handleLogin}>
       <div className="mb-3">
         <label className="form-label">Email</label>
         <input type="email" className="form-control" placeholder="Enter email" />
