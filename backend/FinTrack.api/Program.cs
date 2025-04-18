@@ -1,18 +1,39 @@
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
+using FinTrack.Api.Data;
+using FinTrack.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register services
-builder.Services.AddControllers(); //  This enables attribute-based controllers
+//  Add services to the container
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+//  Swagger with basic info
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "FinTrack API",
+        Version = "v1",
+        Description = "API for FinTrack – Personal Finance Tracker"
+    });
+});
+
+//  Add EF Core with PostgreSQL
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//  Add custom services
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 
-// Middleware
+//  Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -22,6 +43,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-app.MapControllers(); //  THIS is what connects your Controller classes
+app.MapControllers(); //  Hook up all `[ApiController]` routes
 
 app.Run();
