@@ -1,0 +1,39 @@
+/* Signin.css */
+
+.signin-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .signin-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    max-width: 450px;
+    width: 100%;
+    padding: 2rem;
+    color: #000;
+  }
+  
+  .signin-card h3 {
+    font-weight: 600;
+    color: #243B55;
+  }
+  
+  .signin-card .form-control:focus {
+    border-color: #243B55;
+    box-shadow: 0 0 0 0.2rem rgba(36, 59, 85, 0.25);
+  }
+  
+  .signin-card .btn-primary {
+    background-color: #243B55;
+    border: none;
+    border-radius: 8px;
+  }
+  
+  .signin-card .btn-primary:hover {
+    background-color: #1e2f46;
+  }
+  
