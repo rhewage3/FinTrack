@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "tGCVZl1I9j01EJCaau+Ebo3q7nA5DmU+rsOkEe1gEP8=",
+  "Source": "FinTrack.api",
+  "BasePath": "_content/FinTrack.api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
