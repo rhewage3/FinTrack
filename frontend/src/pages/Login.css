@@ -1,0 +1,60 @@
+/* Login.css */
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .login-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    max-width: 450px;
+    width: 100%;
+    padding: 2rem;
+  }
+  
+  .login-card h3 {
+    font-weight: 600;
+    color: #243B55;
+  }
+  
+  .login-card .form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+  }
+  
+  .login-card .form-control:focus {
+    border-color: #243B55;
+    box-shadow: 0 0 0 0.2rem rgba(36, 59, 85, 0.25);
+  }
+  
+  .login-card .btn-primary {
+    background-color: #243B55;
+    border: none;
+    border-radius: 8px;
+  }
+  
+  .login-card .btn-primary:hover {
+    background-color: #1e2f46;
+  }
+  
+  .login-card .btn-outline-secondary {
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .login-card .form-label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .login-card a {
+    color: #243B55;
+  }
+  
+  .login-card a:hover {
+    text-decoration: underline;
+  }
+  
