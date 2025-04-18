@@ -4,6 +4,6 @@ body {
   padding: 0;
   min-height: 100vh;
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(to bottom right, #141E30, #396290);
+  background: linear-gradient(to bottom right, #1a1a1a);
   color: #fff;
 }

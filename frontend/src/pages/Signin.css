@@ -23,17 +23,17 @@
   }
   
   .signin-card .form-control:focus {
-    border-color: #243B55;
+    border-color: #1a1a1a;
     box-shadow: 0 0 0 0.2rem rgba(36, 59, 85, 0.25);
   }
   
   .signin-card .btn-primary {
-    background-color: #243B55;
+    background-color: #1a1a1a;
     border: none;
     border-radius: 8px;
   }
   
   .signin-card .btn-primary:hover {
-    background-color: #1e2f46;
+    background-color: #373737;
   }
   

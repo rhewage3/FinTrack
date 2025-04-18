@@ -32,13 +32,13 @@
   }
   
   .login-card .btn-primary {
-    background-color: #243B55;
+    background-color: #1a1a1a;
     border: none;
     border-radius: 8px;
   }
   
   .login-card .btn-primary:hover {
-    background-color: #1e2f46;
+    background-color: #373737;
   }
   
   .login-card .btn-outline-secondary {
@@ -51,7 +51,7 @@
   }
   
   .login-card a {
-    color: #243B55;
+    color: #1a1a1a;
   }
   
   .login-card a:hover {

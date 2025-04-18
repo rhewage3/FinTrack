@@ -40,7 +40,7 @@ const Signin = () => {
     return (
         <div className="signin-container">
             <div className="signin-card">
-                <h3 className="mb-4 text-center">Create Your Account 📝</h3>
+                <h3 className="mb-4 text-center">Create Your Account 👥</h3>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Full Name</label>
