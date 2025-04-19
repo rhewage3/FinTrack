@@ -1,0 +1,128 @@
+.home-container {
+    padding: 2rem;
+    color: white;
+  }
+  
+  .account-cards {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .account-card {
+    background-color: #2a2a2a;
+    border-radius: 12px;
+    padding: 1rem;
+    width: 200px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .account-card h5 {
+    margin: 0;
+    font-weight: 600;
+  }
+  
+  .balance {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .add-account-modal {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 420px;
+    color: white;
+    backdrop-filter: blur(25px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    animation: modalPop 0.4s ease-out forwards;
+    transform: scale(0.9);
+  }
+  
+  @keyframes modalPop {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  .add-account-modal h4 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+    text-align: center;
+    font-size: 1.4rem;
+  }
+  
+  .add-account-modal input {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+  }
+  
+  .add-account-modal input:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: #4caf50;
+    box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.3);
+    color: white;
+  }
+  
+  .add-account-modal .btn-success {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: black;
+    font-weight: bold;
+    border: none;
+    box-shadow: 0 0 10px rgba(67, 233, 123, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  .add-account-modal .btn-success:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 0 20px rgba(67, 233, 123, 0.8);
+  }
+  
+  
+
+  /*  Responsive tweaks for mobile screens */
+@media (max-width: 576px) {
+    .home-container {
+      padding: 1rem;
+    }
+  
+    .accounts-header h2 {
+      font-size: 1.4rem;
+    }
+  
+    .account-card {
+      width: 100% !important;
+    }
+  
+    .balance {
+      font-size: 1.1rem;
+    }
+  
+    .add-account-modal {
+      padding: 1.5rem;
+    }
+  }
+  

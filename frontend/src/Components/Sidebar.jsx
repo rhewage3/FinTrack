@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 import {
     Home,
@@ -15,6 +15,19 @@ import {
 
 const Sidebar = () => {
     const [showStats, setShowStats] = useState(false);
+    const user = JSON.parse(localStorage.getItem("user"));
+    const navigate = useNavigate();
+
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/", { replace: true });
+      };
+      
+
+
+
 
     return (
         <div className="sidebar">
@@ -59,13 +72,8 @@ const Sidebar = () => {
             <div className="sidebar-bottom">
                 <hr />
                 <div className="sidebar-user">
-                    <div className="sidebar-user-info">
-                        <User size={26} />
-                        <span>John Doe</span>
-                    </div>
-                    <button className="logout-btn">
-                        <LogOut size={16} /> Logout
-                    </button>
+                    <span style={{fontSize: '24px'}}><User size={30} /> {user?.name || "User"}</span>
+                    <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
             </div>
 

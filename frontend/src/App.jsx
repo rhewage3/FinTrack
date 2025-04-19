@@ -1,41 +1,66 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from './pages/Login';
 import Signin from './pages/Signin';
-import Home from './pages/Home'; // you can create this as a placeholder now
-import Records from './pages/Records'; // placeholder
-import PlannedPayments from './pages/PlannedPayments'; // placeholder
+import Home from './pages/Home';
+import Records from './pages/Records';
+import PlannedPayments from './pages/PlannedPayments';
 import MainLayout from './layout/MainLayout';
-
+import ProtectedRoute from './Components/ProtectedRoute';
 
 function App() {
   return (
-   <Router>
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/register" element={<Signin />} />
+    <Router>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Signin />} />
 
-      {/* App Pages with Sidebar */}
-      <Route path="/dashboard" element={
-          <MainLayout>
-            <Home />
-          </MainLayout>
-        } />
-        <Route path="/records" element={
-          <MainLayout>
-            <Records />
-          </MainLayout>
-        } />
-        <Route path="/planned-payments" element={
-          <MainLayout>
-            <PlannedPayments />
-          </MainLayout>
-        } />
+        {/* Protected Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Home />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/records"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Records />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/planned-payments"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <PlannedPayments />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
 
-    </Routes>
-   </Router>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        theme="dark"
+      />
+    </Router>
   );
-
-
 }
 
-export default App
+export default App;
