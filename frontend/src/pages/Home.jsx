@@ -1,13 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Home.css';
 import { motion } from 'framer-motion';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { PlusCircle, Trash2, Pencil } from 'lucide-react';
+import Select from 'react-select';
+import api from '../api';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
+
+
+
+
 
 const Home = () => {
-  const [accounts, setAccounts] = useState([
-    { id: 1, name: 'Wallet', balance: 12000 },
-    { id: 2, name: 'Bank', balance: 45000 },
-  ]);
+  const [accounts, setAccounts] = useState([]);
+
+  //This will run once when the component loads and populate the account list from  backend.
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
+
+  const fetchAccounts = async () => {
+    try {
+      const res = await api.get('/accounts');
+      setAccounts(res.data);
+    } catch (err) {
+      toast.error("Failed to load accounts ❌");
+    }
+  };
+
   const [showModal, setShowModal] = useState(false);
   const [newAccount, setNewAccount] = useState({
     id: null,
@@ -28,9 +48,74 @@ const Home = () => {
     setShowModal(false);
   };
 
-  const deleteAccount = (id) => {
-    setAccounts(accounts.filter((acc) => acc.id !== id));
+
+  const deleteAccount = async (id) => {
+    Swal.fire({
+      title: 'Delete this account?',
+      text: "You won't be able to undo this!",
+      icon: 'warning',
+      background: '#1a1a1a',
+      color: '#fff',
+      iconColor: '#f44336',
+      showCancelButton: true,
+      confirmButtonColor: '#f44336',
+      cancelButtonColor: '#555',
+      confirmButtonText: 'Yes, delete',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'modern-swal',
+      }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          // Call backend DELETE API
+          await api.delete(`/accounts/${id}`);
+  
+          // If successful, update frontend
+          setAccounts((prev) => prev.filter((acc) => acc.id !== id));
+          toast.success("Account deleted ✅");
+        } catch (error) {
+          toast.error("Failed to delete ❌");
+          console.error("Delete failed:", error);
+        }
+      }
+    });
   };
+
+
+  const categoryOptions = [
+    { value: 'wallet', label: 'Wallet' },
+    { value: 'bank', label: 'Bank' },
+    { value: 'credit', label: 'Credit' }
+  ];
+
+
+
+  const handleSave = async () => {
+    if (!newAccount.name || !newAccount.balance || !newAccount.category) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    try {
+      if (isEditing) {
+        const res = await api.put(`/accounts/${newAccount.id}`, newAccount);
+        setAccounts(prev => prev.map(acc => acc.id === newAccount.id ? res.data : acc));
+        toast.success("Account updated ✅");
+      } else {
+        const res = await api.post('/accounts', newAccount);
+        setAccounts(prev => [res.data, ...prev]);
+        toast.success("Account added ✅");
+      }
+
+      setNewAccount({ id: null, name: '', balance: '', category: '' });
+      setIsEditing(false);
+      setShowModal(false);
+    } catch (err) {
+      toast.error("Failed to save account ❌");
+    }
+  };
+
 
   return (
     <div className="container-fluid home-container">
@@ -39,7 +124,12 @@ const Home = () => {
           <h2>Your Accounts</h2>
         </div>
         <div className="col-12 col-md-6 text-md-end mt-3 mt-md-0">
-          <button className="btn btn-outline-light" onClick={() => setShowModal(true)}>
+          <button className="btn btn-outline-light" onClick={() => {
+            setNewAccount({ id: null, name: '', balance: '', category: '' });
+            setIsEditing(false);
+            setShowModal(true);
+          }}
+          >
             <PlusCircle size={20} /> Add Account
           </button>
         </div>
@@ -56,7 +146,30 @@ const Home = () => {
           >
             <div className="d-flex justify-content-between">
               <h5>{acc.name}</h5>
-              
+
+
+              <div className="d-flex gap-2">
+                <button
+                  className="icon-btn"
+                  title="Edit"
+                  onClick={() => {
+                    setNewAccount(acc);
+                    setIsEditing(true);
+                    setShowModal(true);
+                  }}
+                >
+                  <Pencil size={18} />
+                </button>
+
+                <button
+                  className="icon-btn text-danger"
+                  title="Delete"
+                  onClick={() => deleteAccount(acc.id)}
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+
 
             </div>
             <p className="balance">Rs. {acc.balance.toLocaleString()}</p>
@@ -82,16 +195,16 @@ const Home = () => {
               onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })}
             />
 
-            <select
-              className="form-select mb-2"
-              value={newAccount.category}
-              onChange={(e) => setNewAccount({ ...newAccount, category: e.target.value })}
-            >
-              <option value="">Select Category</option>
-              <option value="wallet">Wallet</option>
-              <option value="bank">Bank</option>
-              <option value="credit">Credit</option>
-            </select>
+            <Select
+              styles={customStyles}
+              className="mb-2"
+              placeholder="Select Category"
+              value={categoryOptions.find(opt => opt.value === newAccount.category)}
+              onChange={(selected) => setNewAccount({ ...newAccount, category: selected.value })}
+              options={categoryOptions}
+            />
+
+
 
             <input
               type="number"
@@ -101,34 +214,10 @@ const Home = () => {
               onChange={(e) => setNewAccount({ ...newAccount, balance: e.target.value })}
             />
 
-            <button
-              className="btn btn-success w-100"
-              onClick={() => {
-                if (isEditing) {
-                  setAccounts((prev) =>
-                    prev.map((acc) => (acc.id === newAccount.id ? newAccount : acc))
-                  );
-                  toast.success("Account updated ✅");
-                } else {
-                  setAccounts([
-                    ...accounts,
-                    {
-                      id: Date.now(),
-                      name: newAccount.name,
-                      balance: Number(newAccount.balance),
-                      category: newAccount.category
-                    },
-                  ]);
-                  toast.success("Account added ✅");
-                }
-
-                setNewAccount({ id: null, name: '', balance: '', category: '' });
-                setIsEditing(false);
-                setShowModal(false);
-              }}
-            >
+            <button className="btn btn-success w-100" onClick={handleSave}>
               {isEditing ? 'Update' : 'Add'}
             </button>
+
           </motion.div>
         </div>
       )}
@@ -136,5 +225,23 @@ const Home = () => {
     </div>
   );
 };
+
+const customStyles = {
+  control: (styles) => ({
+    ...styles,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+    color: '#fff',
+  }),
+  singleValue: (styles) => ({ ...styles, color: '#fff' }),
+  menu: (styles) => ({ ...styles, backgroundColor: '#1a1a1a' }),
+  option: (styles, { isFocused }) => ({
+    ...styles,
+    backgroundColor: isFocused ? '#2a2a2a' : '#1a1a1a',
+    color: '#fff',
+  }),
+  placeholder: (styles) => ({ ...styles, color: 'rgba(255,255,255,0.7)' })
+};
+
 
 export default Home;

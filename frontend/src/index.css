@@ -29,3 +29,13 @@ body {
 .Toastify__close-button {
   color: #fff;
 }
+
+
+/* Optional modern sweetalert style */
+.swal2-popup.modern-swal {
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  padding: 1.5rem;
+  font-family: 'Segoe UI', sans-serif;
+}

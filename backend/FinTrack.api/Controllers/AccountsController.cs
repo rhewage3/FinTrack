@@ -57,7 +57,8 @@ namespace FinTrack.Api.Controllers
         //  Helper method to get user ID from JWT token
         private int GetUserId()
         {
-            return int.Parse(User.FindFirst("id")?.Value ?? "0");
+            return int.Parse(User.Claims.FirstOrDefault(c => c.Type == "id")?.Value ?? "0");
+
         }
     }
 }

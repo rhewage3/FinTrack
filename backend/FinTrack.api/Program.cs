@@ -6,6 +6,10 @@ using Microsoft.OpenApi.Models;
 
 using FinTrack.Api.Data;
 using FinTrack.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -14,6 +18,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 //  Add services to the container
 builder.Services.AddControllers();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var key = builder.Configuration["Jwt:Key"];
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+        };
+    });
+
 
 builder.Services.AddCors(options =>
 {
@@ -62,6 +83,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers(); //  Hook up all `[ApiController]` routes
