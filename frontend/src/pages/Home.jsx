@@ -6,6 +6,7 @@ import Select from 'react-select';
 import api from '../api';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import AddTransactionModal from '../Components/AddTransactionModal';
 
 
 
@@ -13,12 +14,24 @@ import Swal from 'sweetalert2';
 
 const Home = () => {
   const [accounts, setAccounts] = useState([]);
+  //for transaction modal
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   //This will run once when the component loads and populate the account list from  backend.
   useEffect(() => {
     fetchAccounts();
   }, []);
 
+
+  //fetchin categories
+  useEffect(() => {
+    fetchAccounts();
+    fetchCategories(); // load categories on startup
+  }, []);
+
+
+  //accounts
   const fetchAccounts = async () => {
     try {
       const res = await api.get('/accounts');
@@ -27,6 +40,18 @@ const Home = () => {
       toast.error("Failed to load accounts ❌");
     }
   };
+
+
+  //categories
+  const fetchCategories = async () => {
+    try {
+      const res = await api.get('/categories'); // Make sure this endpoint exists
+      setCategories(res.data);
+    } catch (err) {
+      toast.error("Failed to load categories ❌");
+    }
+  };
+
 
   const [showModal, setShowModal] = useState(false);
   const [newAccount, setNewAccount] = useState({
@@ -70,7 +95,7 @@ const Home = () => {
         try {
           // Call backend DELETE API
           await api.delete(`/accounts/${id}`);
-  
+
           // If successful, update frontend
           setAccounts((prev) => prev.filter((acc) => acc.id !== id));
           toast.success("Account deleted ✅");
@@ -123,7 +148,7 @@ const Home = () => {
         <div className="col-12 col-md-6">
           <h2>Your Accounts</h2>
         </div>
-        <div className="col-12 col-md-6 text-md-end mt-3 mt-md-0">
+        <div className="col-12 col-md-6 text-md-end mt-3 mt-md-0 mr-3">
           <button className="btn btn-outline-light" onClick={() => {
             setNewAccount({ id: null, name: '', balance: '', category: '' });
             setIsEditing(false);
@@ -132,6 +157,8 @@ const Home = () => {
           >
             <PlusCircle size={20} /> Add Account
           </button>
+
+          <button onClick={() => setShowTransactionModal(true)} className="btn btn-outline-light ms-3 ">Add Transaction</button>
         </div>
       </div>
 
@@ -221,6 +248,16 @@ const Home = () => {
           </motion.div>
         </div>
       )}
+
+      {/* 💳 Transaction Modal  */}
+      <AddTransactionModal
+        show={showTransactionModal}
+        onClose={() => setShowTransactionModal(false)}
+        accounts={accounts}
+        categories={categories} 
+        fetchAccounts={fetchAccounts}
+      />
+
 
     </div>
   );

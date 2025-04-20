@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using FinTrack.Api.Services;
 using FinTrack.Api.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 
 namespace FinTrack.Api.Controllers
 {
@@ -21,6 +23,7 @@ namespace FinTrack.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAccounts()
         {
+            Console.WriteLine("🔴JWT USER ID CLAIM: " + User.FindFirst("id")?.Value);
             int userId = GetUserId();
             var accounts = await _service.GetAccountsAsync(userId);
             return Ok(accounts);
@@ -30,6 +33,7 @@ namespace FinTrack.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAccount([FromBody] AccountDto dto)
         {
+            Console.WriteLine("🔴JWT USER ID CLAIM: " + User.FindFirst("id")?.Value);
             int userId = GetUserId();
             var account = await _service.CreateAccountAsync(dto, userId);
             return Ok(account);

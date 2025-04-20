@@ -34,7 +34,7 @@ namespace FinTrack.Api.Services
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["Jwt:ExpiresInMinutes"])),
+                expires: DateTime.UtcNow.AddDays(7), // valid for 7 days
                 signingCredentials: creds
             );
 
