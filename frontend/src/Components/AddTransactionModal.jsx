@@ -18,20 +18,32 @@ const AddTransactionModal = ({ show, onClose, accounts, categories, fetchAccount
     });
 
     const handleChange = (field, value) => {
+        if (field === 'categoryId' && value !== null && typeof value === 'string') {
+            value = Number(value);
+        }
         setForm(prev => ({ ...prev, [field]: value }));
     };
 
+
     const handleSave = async () => {
-        if (!form.amount || (type !== 'transfer' && !form.categoryId) || (type !== 'income' && !form.fromAccountId)) {
+        if (
+            !form.amount ||
+            (type !== 'transfer' && !form.categoryId) ||
+            (type === 'expense' && !form.fromAccountId) ||
+            (type === 'income' && !form.toAccountId) ||
+            (type === 'transfer' && (!form.fromAccountId || !form.toAccountId))
+        ) {
             toast.error('Please fill in required fields');
             return;
         }
+
+
 
         const payload = {
             ...form,
             toAccountId: form.toAccountId || null,
             fromAccountId: form.fromAccountId || null,
-            categoryId: form.categoryId || null,
+            categoryId: form.categoryId ? Number(form.categoryId) : 9999,
             type,
         };
 
@@ -40,7 +52,7 @@ const AddTransactionModal = ({ show, onClose, accounts, categories, fetchAccount
             toast.success('Transaction added ✅');
             onClose();
 
-            // 🔄 Refresh account balances
+            //  Refresh account balances
             if (fetchAccounts) fetchAccounts();
         } catch (err) {
             console.error(err);
@@ -181,17 +193,17 @@ const AddTransactionModal = ({ show, onClose, accounts, categories, fetchAccount
                     onChange={(e) => handleChange('amount', e.target.value)}
                 />
 
-                {(type === 'expense' || type === 'income') && (
+                {type === 'expense' && (
                     <Select
                         className="mb-2"
                         styles={customStyles}
-                        placeholder={type === 'income' ? 'To Account' : 'From Account'}
+                        placeholder="From Account"
                         options={accounts.map(a => ({ value: a.id, label: a.name }))}
                         onChange={(opt) => handleChange('fromAccountId', opt?.value)}
                     />
                 )}
 
-                {type === 'transfer' && (
+                {type === 'income' && (
                     <Select
                         className="mb-2"
                         styles={customStyles}
@@ -200,6 +212,29 @@ const AddTransactionModal = ({ show, onClose, accounts, categories, fetchAccount
                         onChange={(opt) => handleChange('toAccountId', opt?.value)}
                     />
                 )}
+
+
+
+                {type === 'transfer' && (
+                    <>
+                        <Select
+                            className="mb-2"
+                            styles={customStyles}
+                            placeholder="From Account"
+                            options={accounts.map(a => ({ value: a.id, label: a.name }))}
+                            onChange={(opt) => handleChange('fromAccountId', opt?.value)}
+                        />
+
+                        <Select
+                            className="mb-2"
+                            styles={customStyles}
+                            placeholder="To Account"
+                            options={accounts.map(a => ({ value: a.id, label: a.name }))}
+                            onChange={(opt) => handleChange('toAccountId', opt?.value)}
+                        />
+                    </>
+                )}
+
 
                 {type !== 'transfer' && (
                     <>

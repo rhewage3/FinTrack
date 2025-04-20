@@ -19,12 +19,13 @@ namespace FinTrack.Api.Controllers
 
         // POST: api/transactions
         [HttpPost]
-        public async Task<IActionResult> CreateTransaction([FromBody] TransactionDto dto)
-        {
-            int userId = GetUserId();
-            var transaction = await _service.CreateTransactionAsync(dto, userId);
-            return Ok(transaction);
-        }
+public async Task<IActionResult> CreateTransaction(TransactionDto dto)
+{
+    int userId = GetUserId();
+    var transaction = await _service.CreateTransactionAsync(dto, userId);
+    return Ok(transaction);
+}
+
 
         // GET: api/transactions
         [HttpGet]

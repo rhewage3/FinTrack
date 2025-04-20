@@ -14,7 +14,7 @@ namespace FinTrack.Api.Services
             _context = context;
         }
 
-        //  Save new transaction to database
+        // Save new transaction to database
         public async Task<Transaction> CreateTransactionAsync(TransactionDto dto, int userId)
         {
             var transaction = new Transaction
@@ -22,7 +22,6 @@ namespace FinTrack.Api.Services
                 UserId = userId,
                 Type = dto.Type,
                 Amount = dto.Amount,
-                CategoryId = dto.CategoryId,
                 FromAccountId = dto.FromAccountId,
                 ToAccountId = dto.ToAccountId,
                 Note = dto.Note,
@@ -31,21 +30,30 @@ namespace FinTrack.Api.Services
                 CreatedAt = DateTime.UtcNow,
             };
 
+            // ✅ Assign CategoryId only if it's present (not null)
+            if (dto.CategoryId.HasValue)
+            {
+                transaction.CategoryId = dto.CategoryId.Value;
+            }
+
             _context.Transactions.Add(transaction);
 
-            //  Optionally auto-update account balances
-            if (dto.Type == "income" && dto.FromAccountId != null)
-{
-    var toAcc = await _context.Accounts.FindAsync(dto.FromAccountId);
-    if (toAcc != null)
-        toAcc.Balance += dto.Amount;
-}
-
+            // Auto-update account balances
+            if (dto.Type == "income" && dto.ToAccountId != null)
+            {
+                var toAcc = await _context.Accounts.FindAsync(dto.ToAccountId);
+                if (toAcc != null)
+                {
+                    toAcc.Balance += dto.Amount;
+                }
+            }
             else if (dto.Type == "expense" && dto.FromAccountId != null)
             {
                 var fromAcc = await _context.Accounts.FindAsync(dto.FromAccountId);
                 if (fromAcc != null)
+                {
                     fromAcc.Balance -= dto.Amount;
+                }
             }
             else if (dto.Type == "transfer" && dto.FromAccountId != null && dto.ToAccountId != null)
             {
@@ -62,7 +70,7 @@ namespace FinTrack.Api.Services
             return transaction;
         }
 
-        // (Later) Get all transactions for a user
+        // Get all transactions for a user
         public async Task<List<Transaction>> GetTransactionsAsync(int userId)
         {
             return await _context.Transactions

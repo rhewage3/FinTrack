@@ -59,10 +59,16 @@ namespace FinTrack.Api.Controllers
         }
 
         //  Helper method to get user ID from JWT token
-        private int GetUserId()
-        {
-            return int.Parse(User.Claims.FirstOrDefault(c => c.Type == "id")?.Value ?? "0");
+       private int GetUserId()
+{
+    var idClaim = User.FindFirst("id")?.Value;
+    Console.WriteLine("📣 USER ID CLAIM: " + idClaim);
 
-        }
+    if (int.TryParse(idClaim, out int userId))
+        return userId;
+
+    throw new UnauthorizedAccessException("Invalid or missing JWT 'id' claim.");
+}
+
     }
 }
