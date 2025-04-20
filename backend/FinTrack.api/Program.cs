@@ -88,4 +88,11 @@ app.UseAuthorization();
 
 app.MapControllers(); //  Hook up all `[ApiController]` routes
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    DbSeeder.SeedCategories(db);
+}
+
+
 app.Run();

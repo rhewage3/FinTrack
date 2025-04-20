@@ -11,5 +11,8 @@ namespace FinTrack.Api.Data
         public DbSet<User> Users { get; set; }
         //account table
         public DbSet<Account> Accounts { get; set; } 
+        //Category table
+        public DbSet<Category> Categories { get; set; }
+
     }
 }
