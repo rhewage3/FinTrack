@@ -19,12 +19,12 @@ namespace FinTrack.Api.Controllers
 
         // POST: api/transactions
         [HttpPost]
-public async Task<IActionResult> CreateTransaction(TransactionDto dto)
-{
-    int userId = GetUserId();
-    var transaction = await _service.CreateTransactionAsync(dto, userId);
-    return Ok(transaction);
-}
+        public async Task<IActionResult> CreateTransaction(TransactionDto dto)
+        {
+            int userId = GetUserId();
+            var transaction = await _service.CreateTransactionAsync(dto, userId);
+            return Ok(transaction);
+        }
 
 
         // GET: api/transactions
@@ -33,13 +33,30 @@ public async Task<IActionResult> CreateTransaction(TransactionDto dto)
         {
             int userId = GetUserId();
             var transactions = await _service.GetTransactionsAsync(userId);
-            return Ok(transactions);
+
+            var result = transactions.Select(tx => new
+            {
+                id = tx.Id,
+                amount = tx.Amount,
+                type = tx.Type,
+                category = tx.Category?.Name,
+                fromAccount = tx.FromAccount?.Name,
+                toAccount = tx.ToAccount?.Name,
+                date = tx.Date.ToString("yyyy-MM-dd"),
+                label = tx.Label,
+                note = tx.Note
+            });
+
+            return Ok(result);
         }
+
 
         //  Helper method to extract user ID from JWT
         private int GetUserId()
         {
             return int.Parse(User.FindFirst("id")?.Value ?? "0");
         }
+
+        
     }
 }
